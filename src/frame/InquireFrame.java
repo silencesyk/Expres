@@ -2,6 +2,10 @@ package frame;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -10,10 +14,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import po.MessagePo;
+import logic.Client;
+import logicservice.ClientService;
+
 public class InquireFrame extends JFrame{
 	
 	private JPanel contentPanel;
-	
+	private JTextField expressField;
 	
 	public InquireFrame(){
 		Dimension   screensize   =   Toolkit.getDefaultToolkit().getScreenSize();
@@ -34,7 +42,7 @@ public class InquireFrame extends JFrame{
 		expressId.setBounds(100, 80, 40, 50);
 		contentPanel.add(expressId);
 		
-		JTextField expressField=new JTextField();
+		expressField=new JTextField();
 		expressField.setBounds(160, 83, 120, 44);
 		contentPanel.add(expressField);
 		
@@ -43,6 +51,27 @@ public class InquireFrame extends JFrame{
 		contentPanel.add(inquireButton);
 		
 		setVisible(true);
+		
+		inquireButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String inquireID=expressField.getText();
+				ClientService client=new Client();
+				try {
+					client.init();
+				} catch (UnknownHostException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				MessagePo m=new MessagePo();
+				client.sendMessage(m.setInquireMessage(inquireID));
+				
+			}
+		});
 	}
 	
 }

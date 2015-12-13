@@ -1,5 +1,7 @@
 package po;
 
+import logic.Client;
+import logicservice.ClientService;
 import frame.AdminFrame;
 import frame.CourierFrame;
 import frame.LoginFrame;
@@ -11,6 +13,7 @@ public class UserPo {
 		this.id=id;
 		this.passwd=passwd;
 		this.identity=identity;
+
 	}
 	
 	public void createWindow(LoginFrame loginFrame){

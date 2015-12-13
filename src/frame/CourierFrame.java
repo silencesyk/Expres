@@ -15,6 +15,9 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 
+import logic.Client;
+import logicservice.ClientService;
+
 public class CourierFrame extends JFrame{
 	
 	private JPanel sendPanel,getExPanel;

@@ -7,12 +7,15 @@ import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -32,16 +35,10 @@ public class LoginFrame extends JFrame{
 	private final JComboBox box ;
 	private static LoginFrame loginframe; 
 	
-	public void run() {
-				try {
-					
-					loginframe = new LoginFrame();
-					loginframe.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-	
+	public static void display(){
+		loginframe=new LoginFrame();
+		loginframe.setVisible(true);
+	}
 	
 	public LoginFrame(){
 		
@@ -93,22 +90,32 @@ public class LoginFrame extends JFrame{
 		JButton login=new JButton("登录");
 		login.setBounds(100, 200, 80, 30);
 		contentPanel.add(login);
+		
+		setVisible(true);
 		login.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 登录
 				String id=idField.getText();
 				String passwd=passwordField.getText();
 				String identity=box.getSelectedItem().toString();
-				//验证密码是否正确check(id, passwd,identity);
-				Client client=new ClientService();
+				//验证密码是否正确
 				MessagePo m=new MessagePo();
+				ClientService client=new Client();
+				try {
+					client.init();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
 				client.sendMessage(m.setLoginMessage(id, passwd, identity));
 				//正确则进入对应窗口
-				if(client.getMessage().equals("true")){
+				if(client.getMessage().equals("login true")){
 					UserPo user=new UserPo(id, passwd, identity);
 					user.createWindow(loginframe);
+				}else{
+					JOptionPane.showMessageDialog(null,"登录信息错误","错误",JOptionPane.ERROR_MESSAGE);
 				}
 				
 			}
@@ -124,7 +131,7 @@ public class LoginFrame extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				// 寄件人查询窗口
 				InquireFrame inquireFrame=new InquireFrame();
-				
+				loginframe.dispose();
 			}
 		});
 	}
