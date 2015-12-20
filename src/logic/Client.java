@@ -23,7 +23,6 @@ public class Client  implements ClientService{
 	public void init() throws UnknownHostException, IOException  {
 		//客户端初始化
 		socket=new Socket(address,port);
-		System.out.println("------------Client run-----------");
 	}
 
 	@Override
@@ -46,6 +45,7 @@ public class Client  implements ClientService{
 		try{
 			BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			message=in.readLine();
+			System.out.println(message);
 			return message;
 		}catch(IOException e){
 			e.printStackTrace();

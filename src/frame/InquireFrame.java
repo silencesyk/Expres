@@ -1,6 +1,7 @@
 package frame;
 
 import java.awt.Dimension;
+import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +11,7 @@ import java.net.UnknownHostException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -18,10 +20,14 @@ import po.MessagePo;
 import logic.Client;
 import logicservice.ClientService;
 
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+
 public class InquireFrame extends JFrame{
 	
 	private JPanel contentPanel;
 	private JTextField expressField;
+	private JTextArea textArea;
 	
 	public InquireFrame(){
 		Dimension   screensize   =   Toolkit.getDefaultToolkit().getScreenSize();
@@ -39,16 +45,20 @@ public class InquireFrame extends JFrame{
 		contentPanel.setLayout(null);
 		
 		JLabel expressId=new JLabel("订单号");
-		expressId.setBounds(100, 80, 40, 50);
+		expressId.setBounds(10, 10, 40, 50);
 		contentPanel.add(expressId);
 		
 		expressField=new JTextField();
-		expressField.setBounds(160, 83, 120, 44);
+		expressField.setBounds(60, 14, 120, 44);
 		contentPanel.add(expressField);
 		
 		JButton inquireButton=new JButton("查询");
-		inquireButton.setBounds(250, 200,80 , 30);
+		inquireButton.setBounds(243, 20,80 , 30);
 		contentPanel.add(inquireButton);
+		
+		textArea = new JTextArea();
+		textArea.setBounds(20, 70, 404, 181);
+		contentPanel.add(textArea);
 		
 		setVisible(true);
 		
@@ -61,17 +71,15 @@ public class InquireFrame extends JFrame{
 				try {
 					client.init();
 				} catch (UnknownHostException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				MessagePo m=new MessagePo();
 				client.sendMessage(m.setInquireMessage(inquireID));
-				
+			
+				textArea.append(client.getMessage().replace("/n", "\r\n"));
 			}
 		});
 	}
-	
 }

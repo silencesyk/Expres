@@ -24,4 +24,24 @@ public class MessagePo {
 			message="inquire "+id;
 			return message;
 		}
+
+		public String setSend(String msg) {
+			message="send "+msg;
+			return message;
+		}
+
+		public String setCreate(String msg) {
+			message="create "+msg;
+			return message;
+		}
+
+		public String setChangePassword(String string) {
+			message="change "+string;
+			return message;
+		}
+
+		public String setGet(String string) {
+			message="get "+string;
+			return message;
+		}
 }

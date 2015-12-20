@@ -4,18 +4,24 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 
+import po.MessagePo;
 import logic.Client;
+import logic.GoodsInfo;
 import logicservice.ClientService;
 
 public class CourierFrame extends JFrame{
@@ -35,6 +41,24 @@ public class CourierFrame extends JFrame{
 	private JTextField textField_11;
 	private JTextField textField_12;
 	private JTextField textField_13;
+	JRadioButton rdbtnNewRadioButton;
+	JRadioButton radioButton;
+	JRadioButton radioButton_1;
+	JRadioButton rdbtnNewRadioButton_1;
+	JRadioButton rdbtnNewRadioButton_2 ;
+	JRadioButton rdbtnNewRadioButton_3 ;
+	JRadioButton rdbtnNewRadioButton_4 ;
+	JLabel lblNewLabel_18;
+	JComboBox comboBox_1 ;
+	JComboBox comboBox_2;
+	JComboBox comboBox;
+	JButton btnNewButton;
+	String type;
+	String wrapType;
+	JTextField getDate1Field;
+	JTextField getDate3Field;
+	JTextField geterField;
+	JTextField getIdField;
 	
 	public CourierFrame(){
 		Dimension   screensize   =   Toolkit.getDefaultToolkit().getScreenSize();
@@ -87,7 +111,7 @@ public class CourierFrame extends JFrame{
 		lblNewLabel_1.setBounds(20, 131, 54, 15);
 		sendPanel.add(lblNewLabel_1);
 		
-		JComboBox comboBox = new JComboBox();
+		comboBox = new JComboBox();
 		comboBox.setBounds(100, 128, 66, 21);
 		comboBox.addItem("北京");
 		comboBox.addItem("上海");
@@ -126,7 +150,7 @@ public class CourierFrame extends JFrame{
 		lblNewLabel_5.setBounds(202, 70, 54, 15);
 		sendPanel.add(lblNewLabel_5);
 		
-		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1 = new JComboBox();
 		comboBox_1.setBounds(292, 67, 66, 21);
 		comboBox_1.addItem("北京");
 		comboBox_1.addItem("上海");
@@ -213,15 +237,15 @@ public class CourierFrame extends JFrame{
 		
 		
 		
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("经济快递");
+		rdbtnNewRadioButton = new JRadioButton("经济快递");
 		rdbtnNewRadioButton.setBounds(20, 265, 80, 23);
 		sendPanel.add(rdbtnNewRadioButton);
 		
-		JRadioButton radioButton = new JRadioButton("标准快递",true);
+		radioButton = new JRadioButton("标准快递",true);
 		radioButton.setBounds(20, 291, 80, 23);
 		sendPanel.add(radioButton);
 		
-		JRadioButton radioButton_1 = new JRadioButton("特快专递");
+		radioButton_1 = new JRadioButton("特快专递");
 		radioButton_1.setBounds(20, 317, 80, 23);
 		sendPanel.add(radioButton_1);
 		
@@ -234,19 +258,19 @@ public class CourierFrame extends JFrame{
 		lblNewLabel_15.setBounds(387, 8, 54, 15);
 		sendPanel.add(lblNewLabel_15);
 		
-		JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("纸箱(5元)",true);
+		rdbtnNewRadioButton_1 = new JRadioButton("纸箱(5元)",true);
 		rdbtnNewRadioButton_1.setBounds(397, 34, 121, 23);
 		sendPanel.add(rdbtnNewRadioButton_1);
 		
-		JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("木箱(10元)");
+		rdbtnNewRadioButton_2 = new JRadioButton("木箱(10元)");
 		rdbtnNewRadioButton_2.setBounds(397, 59, 121, 23);
 		sendPanel.add(rdbtnNewRadioButton_2);
 		
-		JRadioButton rdbtnNewRadioButton_3 = new JRadioButton("快递袋(1元)");
+		rdbtnNewRadioButton_3 = new JRadioButton("快递袋(1元)");
 		rdbtnNewRadioButton_3.setBounds(397, 84, 121, 23);
 		sendPanel.add(rdbtnNewRadioButton_3);
 		
-		JRadioButton rdbtnNewRadioButton_4 = new JRadioButton("其他");
+		rdbtnNewRadioButton_4 = new JRadioButton("其他");
 		rdbtnNewRadioButton_4.setBounds(397, 108, 55, 23);
 		sendPanel.add(rdbtnNewRadioButton_4);
 		
@@ -274,58 +298,160 @@ public class CourierFrame extends JFrame{
 		lblNewLabel_17.setBounds(387, 228, 54, 15);
 		sendPanel.add(lblNewLabel_17);
 		
-		JLabel lblNewLabel_18 = new JLabel();//费用显示
+		lblNewLabel_18 = new JLabel();//费用显示
 		lblNewLabel_18.setBounds(397, 258, 54, 15);
 		sendPanel.add(lblNewLabel_18);
 		
-		JButton btnNewButton = new JButton("计算费用");
+		btnNewButton = new JButton("计算费用");
 		btnNewButton.setBounds(387, 306, 93, 23);
+		btnNewButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				GoodsInfo gi=new GoodsInfo();
+				
+				if(rdbtnNewRadioButton.isSelected())
+					type="经济快递";
+				if(radioButton.isSelected())
+					type="标准快递";
+				if(radioButton_1.isSelected())
+					type="特快专递";
+				gi.setType(type);
+				gi.setFrom(comboBox.getSelectedItem().toString());
+				gi.setTo(comboBox_1.getSelectedItem().toString());
+				try{
+					gi.setWeight(Double.parseDouble(textField_7.getText()));
+					gi.setVolume(Integer.parseInt(textField_8.getText())*Integer.parseInt(textField_10.getText())*Integer.parseInt(textField_11.getText()));
+					double wrap=0;
+					if(rdbtnNewRadioButton_1.isSelected()){
+						wrap=5;
+						wrapType="纸箱";
+					}
+					if(rdbtnNewRadioButton_2.isSelected()){
+						wrapType="木箱";
+						wrap=10;
+					}
+						
+					if(rdbtnNewRadioButton_3.isSelected()){
+						wrapType="快递袋";
+						wrap=1;
+					}
+					
+					if(rdbtnNewRadioButton_4.isSelected()){
+						wrapType="其他";
+						wrap=Double.parseDouble(textField_12.getText().toString());
+					}
+					
+					gi.setWrap(wrap);
+				}catch(NumberFormatException e1){
+					JOptionPane.showMessageDialog(null,"有信息未填","错误",JOptionPane.ERROR_MESSAGE);
+				}
+					lblNewLabel_18.setText(gi.calculate());
+					setVisible(true);
+			}
+		});
 		sendPanel.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("完成寄件");
 		btnNewButton_1.setBounds(481, 306, 93, 23);
+		btnNewButton_1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				btnNewButton.doClick();
+				String msg="";
+				
+	
+
+				try{				
+					String vol=""+Integer.parseInt(textField_8.getText())*Integer.parseInt(textField_10.getText())*Integer.parseInt(textField_11.getText());
+					msg+=textField.getText()+" "+comboBox.getSelectedItem().toString()+" "+textField_1.getText()+" "
+							+textField_2.getText()+" "+type+" "+textField_3.getText()+" "+comboBox_1.getSelectedItem().toString()+" "
+							+textField_4.getText()+" "+textField_5.getText()+" "+textField_6.getText()+" "+textField_7.getText()+" "+vol+" "+textField_9.getText()+" "
+							+wrapType+" "+textField_13.getText()+" "+lblNewLabel_18.getText();
+				}catch(Exception e1){
+					JOptionPane.showMessageDialog(null,"有信息未填","错误",JOptionPane.ERROR_MESSAGE);
+				}
+				String str[]=msg.split(" ");
+				if(str.length<16)
+					JOptionPane.showMessageDialog(null,"有信息未填","错误",JOptionPane.ERROR_MESSAGE);
+				else{
+					MessagePo mp=new MessagePo();
+					ClientService client=new Client();
+					try {
+						client.init();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					client.sendMessage(mp.setSend(msg));
+					JOptionPane.showMessageDialog(null,client.getMessage(),"提示",JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
 		sendPanel.add(btnNewButton_1);
+		
+		JLabel lblNewLabel_19 = new JLabel("元");
+		lblNewLabel_19.setBounds(520, 112, 54, 15);
+		sendPanel.add(lblNewLabel_19);
 
 		
 		
 		JLabel geter=new JLabel("收件人");
 		geter.setBounds(200, 50, 100, 30);
-		JTextField geterField=new JTextField();
+		geterField=new JTextField();
 		geterField.setBounds(300,50,100,30);
 		
 		JLabel getId=new JLabel("收件编号");
 		getId.setBounds(200, 110, 100, 30);
-		JTextField getIdField=new JTextField();
+		getIdField=new JTextField();
 		getIdField.setBounds(300,110,100,30);
 		
-		JLabel getDate1=new JLabel("收件日期(年)");
+		JLabel getDate1=new JLabel("收件时间");
 		getDate1.setBounds(200, 170, 100, 30);
-		JLabel getDate105=new JLabel("20",JLabel.CENTER);
-		getDate105.setBounds(300, 170, 50, 30);
-		JTextField getDate1Field=new JTextField();
-		getDate1Field.setBounds(350,170,50,30);
-		JLabel getDate2=new JLabel("收件日期(月)");
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
+		getDate1Field=new JTextField(df.format(new java.util.Date()));
+		getDate1Field.setBounds(300,170,200,30);
+		JLabel getDate2=new JLabel("收件地点");
 		getDate2.setBounds(200, 230, 100, 30);
-		JTextField getDate2Field=new JTextField();
-		getDate2Field.setBounds(300,230,100,30);
-		JLabel getDate3=new JLabel("收件日期(日)");
-		getDate3.setBounds(200, 290, 100, 30);
-		JTextField getDate3Field=new JTextField();
-		getDate3Field.setBounds(300,290,100,30);
+		comboBox_2 = new JComboBox();
+		comboBox_2.setBounds(300, 230 ,100, 30);
+		comboBox_2.addItem("北京");
+		comboBox_2.addItem("上海");
+		comboBox_2.addItem("广州");
+		comboBox_2.addItem("南京");
+		getExPanel.add(comboBox_2);
+		getDate3Field=new JTextField();
+		getDate3Field.setBounds(200,290,200,30);
 		
 		JButton getConfirm=new JButton("完成收件");
 		getConfirm.setBounds(450, 290, 100, 30);
-		
+		getConfirm.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//完成收件
+				String geter=geterField.getText();
+				String getId=getIdField.getText();
+				String getTime=getDate1Field.getText();
+				String getPlace=comboBox_2.getSelectedItem().toString()+getDate3Field.getText();
+				MessagePo mp=new MessagePo();
+				ClientService client=new Client();
+				try {
+					client.init();
+				} catch ( IOException e1) {
+					e1.printStackTrace();
+				}
+				client.sendMessage(mp.setGet(geter+" "+getId+" "+getTime+" "+getPlace));
+				JOptionPane.showMessageDialog(null,client.getMessage(),"提示",JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
 		getExPanel.add(geter);
 		getExPanel.add(geterField);
 		getExPanel.add(getId);
 		getExPanel.add(getIdField);
 		getExPanel.add(getDate1);
 		getExPanel.add(getDate2);
-		getExPanel.add(getDate3);
-		getExPanel.add(getDate105);
 		getExPanel.add(getDate1Field);
-		getExPanel.add(getDate2Field);
 		getExPanel.add(getDate3Field);
 		getExPanel.add(getConfirm);
 		

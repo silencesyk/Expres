@@ -4,16 +4,22 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import logic.Client;
+import logicservice.ClientService;
+import po.MessagePo;
 import po.UserPo;
 
 public class AdminFrame extends JFrame{
@@ -122,7 +128,24 @@ public class AdminFrame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 更改
-				
+				String id="admin";
+				String password=oldField.getText();
+				String newPassword=newField.getText();
+				String newPassword2=new2Field.getText();
+				if(newPassword.equals(newPassword2)){
+					ClientService client=new Client();
+					MessagePo mp=new MessagePo();
+					try {
+						client.init();
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					client.sendMessage(mp.setChangePassword(id+" "+password+" "+newPassword));
+					JOptionPane.showMessageDialog(null,client.getMessage(),"提示",JOptionPane.INFORMATION_MESSAGE);
+				}
+				else 
+					JOptionPane.showMessageDialog(null,"2次密码出入不同","错误",JOptionPane.ERROR_MESSAGE);
+					
 			}
 		});
 		
@@ -148,6 +171,23 @@ public class AdminFrame extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 确定创建
+				String id=idField.getText();
+				String password =passwordField.getText();
+				String password2=password2Field.getText();
+				String identity=box.getSelectedItem().toString();
+				if(password.equals(password2)){
+					ClientService client=new Client();
+					MessagePo mp=new MessagePo();
+					try {
+						client.init();
+					} catch ( IOException e1) {
+						e1.printStackTrace();
+					}
+					client.sendMessage(mp.setCreate(id+" "+password+" "+identity));
+					JOptionPane.showMessageDialog(null,client.getMessage(),"提示",JOptionPane.INFORMATION_MESSAGE);
+				}
+				else 
+					JOptionPane.showMessageDialog(null,"2次密码出入不同","错误",JOptionPane.ERROR_MESSAGE);
 				
 			}
 		});
